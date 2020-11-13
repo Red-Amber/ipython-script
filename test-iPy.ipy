@@ -1,0 +1,73 @@
+
+# Demande a l'utilisateur d'entrer un cehmin et le renvoie
+def askPath():
+    return input("Please enter the path : ")
+
+# renvoie le contenu du dossier 
+# Prends une chaine de caractère (le chemin du dossier) en argument
+# Si hiddent=True dans les arguments, affiche aussi les dossiers cachés
+def listFiles(path, hidden=False):
+    if hidden:
+        ls = !ls -la {path}
+    else:
+        ls =  !ls -l {path}
+    return ls
+
+# Prends les droits d'un fichier, ou une ligne de ls en arguments
+# Revoie True si c'est un dossier
+def isDir(l):
+    return l[0] == 'd'
+
+# Prends les droits d'un fichier, ou une ligne de ls en arguments
+# Revoie True si c'est un dossier
+def isLink(l):
+    return l[0] == 'l'
+
+# Prends les droits d'un fichier, ou une ligne de ls en arguments
+# Revoie True si c'est un dossier
+def isFile(l):
+    return l[0] == '-'
+
+# Affiche le contenu d'un fichier
+# Prends un chemin (en string) en arguments
+def printFile(path):
+    cat = !cat {path}
+    for l in cat:
+        print(l)
+
+# Prends le résultat d'un ls en argument
+# Renvoie la liste de fichier formattés en dictionnaires
+def ls2dict(ls):
+    ls = ls[1:]
+    dic = {}
+    for l in ls:
+        l = l.split(" ")
+        l = [i for i in l if i] 
+        d = {"perms": l[0], "owner": l[2], "group": l[3], "name":l[-1]}
+        dic[d["name"]] = d
+    return dic
+
+# Liste les services 
+# ne liste que les services actifs si onlyActives=True
+# ne liste que les services inactifs si onlyInactives=True
+# ne liste que les services a l'état inconnu si onlyUnknown=True
+def getServices(onlyActives=False, onlyInactives=False, onlyUnknown=False):
+    serv = !service --status-all
+    li = []
+    for s in serv:
+        s = s.split(" ")
+        s = [i for i in s if i]
+        if onlyActives:
+            if s[1] == '+':
+                li = [s[1], s[-1]]
+        elif onlyInactives:
+            if s[1] == '-':
+                li = [s[1], s[-1]]
+        elif onlyUnknown:
+            if s[1] == '?':
+                li = [s[1], s[-1]]
+        else:
+            li = [s[1], s[-1]]
+    li = [i for i in li if i] # Clean all empty
+    return li
+    
