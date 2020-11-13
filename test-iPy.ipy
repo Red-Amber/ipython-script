@@ -1,5 +1,5 @@
 
-# Demande a l'utilisateur d'entrer un cehmin et le renvoie
+# Demande a l'utilisateur d'entrer un chemin et le renvoie
 def askPath():
     return input("Please enter the path : ")
 
