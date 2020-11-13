@@ -59,15 +59,24 @@ def getServices(onlyActives=False, onlyInactives=False, onlyUnknown=False):
         s = [i for i in s if i]
         if onlyActives:
             if s[1] == '+':
-                li = [s[1], s[-1]]
+                li.append(s[-1])
         elif onlyInactives:
             if s[1] == '-':
-                li = [s[1], s[-1]]
+                li.append(s[-1])
         elif onlyUnknown:
             if s[1] == '?':
-                li = [s[1], s[-1]]
+                li.append(s[-1])
         else:
             li = [s[1], s[-1]]
     li = [i for i in li if i] # Clean all empty
     return li
     
+# Active le service passé en argument
+def activateService(name):
+    !systemctl start {name}
+
+# Active tous les services inactifs
+def activateAllServices():
+    services = getServices(onlyInactives=True)
+    for s in services:
+        activateService(s)
